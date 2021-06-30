@@ -197,6 +197,8 @@ void oled_task_user(void) {
 }
 #endif
 
+/* Original Etch-a-Sketch attempt based on KC_MS_
+
 #ifdef ENCODER_ENABLE
 bool encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
@@ -218,6 +220,8 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 #endif
+
+*/
 
 // Initialize variable holding the binary
 // representation of active modifiers.
@@ -262,3 +266,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 
+        #ifdef ENCODER_ENABLE
+        void encoder_update_user(uint8_t index, bool clockwise) {
+        #    ifdef POINTING_DEVICE_ENABLE
+            encoder_update_mouse(index, clockwise);
+        #    endif
+            return;
+        #endif
