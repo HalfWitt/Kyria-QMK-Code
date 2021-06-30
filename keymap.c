@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 #include QMK_KEYBOARD_H
-
+#include "pointing_device.h"
+#include "encoder_mouse.h"
 enum layers {
     _QWERTY = 0,
     _LOWER,
@@ -197,79 +198,11 @@ void oled_task_user(void) {
 }
 #endif
 
-/* Original Etch-a-Sketch attempt based on KC_MS_
-
 #ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) {
-        // Mouse Vertical
-        if (clockwise) {
-            tap_code(KC_MS_U);
-        } else {
-            tap_code(KC_MS_D);
-        }
-    }
-    else if (index == 1) {
-        // Mouse Horizontal
-        if (clockwise) {
-            tap_code(KC_MS_RIGHT);
-        } else {
-            tap_code(KC_MS_LEFT);
-        }
-    }
-    return true;
-}
-#endif
-
-*/
-
-// Initialize variable holding the binary
-// representation of active modifiers.
-uint8_t mod_state;
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    // Store the current modifier state in the variable for later reference
-    mod_state = get_mods();
-    switch (keycode) {
-
-    case KC_BSPC:
-        {
-        // Initialize a boolean variable that keeps track
-        // of the delete key status: registered or not?
-        static bool delkey_registered;
-        if (record->event.pressed) {
-            // Detect the activation of either shift keys
-            if (mod_state & MOD_MASK_SHIFT) {
-                // First temporarily canceling both shifts so that
-                // shift isn't applied to the KC_DEL keycode
-                del_mods(MOD_MASK_SHIFT);
-                register_code(KC_DEL);
-                // Update the boolean variable to reflect the status of KC_DEL
-                delkey_registered = true;
-                // Reapplying modifier state so that the held shift key(s)
-                // still work even after having tapped the Backspace/Delete key.
-                set_mods(mod_state);
-                return false;
-            }
-        } else { // on release of KC_BSPC
-            // In case KC_DEL is still being sent even after the release of KC_BSPC
-            if (delkey_registered) {
-                unregister_code(KC_DEL);
-                delkey_registered = false;
-                return false;
-            }
-        }
-        // Let QMK process the KC_BSPC keycode as usual outside of shift
-        return true;
-    }
-
-    }
-    return true;
-};
-
-        #ifdef ENCODER_ENABLE
         void encoder_update_user(uint8_t index, bool clockwise) {
         #    ifdef POINTING_DEVICE_ENABLE
-            encoder_update_mouse(index, clockwise);
+            encoder_update_mouse(index, bool clockwise);
         #    endif
             return;
         #endif
+		}
